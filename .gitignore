@@ -1,0 +1,6 @@
+.vscode/
+Images/
+build/
+configurations.h
+CMakeLists.txt
+.DS_Store
