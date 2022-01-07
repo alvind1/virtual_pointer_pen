@@ -48,7 +48,7 @@ void test() {
 
   //demos::testHighlightClosestContourToLine();
 
-  //demos::big();
+  demos::big();
 }
 
 int main(int argc, char** argv) {
