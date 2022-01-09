@@ -11,31 +11,42 @@ using std::endl;
 using cv::Mat;
 using cv::Point;
 using cv::Scalar;
-using utility::hsv_colours;
 
 namespace pen {
-
-struct drawingPoints {
+struct Pen::drawingPoints {
   Point p;
-  int c;
-  bool connect_to_prev;
+  Scalar colour;
+  bool connectToPrev;
 };
 
-void drawPointsOnScreen(Mat img, vector<drawingPoints> newPoints, vector<Scalar> colours = {{255, 0, 0}, {0, 255, 0}}) {
+void Pen::drawPointsOnScreen(Mat img, vector<drawingPoints> newPoints) {
   for (int i = 0; i < newPoints.size(); ++i) {
-    cv::circle(img, newPoints[i].p, 5, colours[newPoints[i].c], cv::FILLED);
+    cv::circle(img, newPoints[i].p, 5, newPoints[i].colour, cv::FILLED);
   }
 }
 
-void drawLinesOnScreen(Mat img, vector<drawingPoints> newPoints, vector<Scalar> colours = {{255, 0, 0}, {0, 255, 0}}) {
+void Pen::drawLinesOnScreen(Mat img, vector<drawingPoints> newPoints, vector<Scalar> colours) {
   for (int i = 1; i < newPoints.size(); ++i) {
-    if (newPoints[i - 1].c == newPoints[i].c && newPoints[i].connect_to_prev) {
-      line(img, newPoints[i - 1].p, newPoints[i].p, colours[newPoints[i].c], 10);
+    if (newPoints[i - 1].colour == newPoints[i].colour && newPoints[i].connectToPrev) {
+      line(img, newPoints[i - 1].p, newPoints[i].p, newPoints[i].colour, 10);
     }
   }
 }
 
-void pen() {
+void Pen::draw(Mat &img, Mat &imgHSV, vector<drawingPoints> &newPoints, vector<Mat> &masks, bool draw_key, bool prev_key) {
+  cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
+  for (int i = 0; i < highlighters.size(); i++) {
+    masks[i] = (colour_detection::findColour(imgHSV, highlighters[i].first.min, highlighters[i].first.max));
+    Point myPoint = contour_detection::drawLargestRectangle(img, masks[i]);
+    if (draw_key == 1 && myPoint.x != 0 && myPoint.y != 0)
+      newPoints.push_back(drawingPoints{myPoint, highlighters[i].second, prev_key});
+  }
+
+  drawPointsOnScreen(img, newPoints);
+  // drawLinesOnScreen(img, newPoints);
+}
+
+void Pen::go() {
   cv::VideoCapture cap(0);
   Mat img, imgHSV;
   if (cap.isOpened() == false) {
@@ -44,20 +55,13 @@ void pen() {
   }
 
   vector<drawingPoints> newPoints;
-  vector<Mat> masks(hsv_colours.size());
+  vector<Mat> masks(highlighters.size());
   bool draw_key = 0, prev_key = 0;
   while (true) {
     cap.read(img);
-    cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
-    for (int i = 0; i < hsv_colours.size(); i++) {
-      masks[i] = (colour_detection::findColour(imgHSV, hsv_colours[i].first, hsv_colours[i].second));
-      Point myPoint = contour_detection::drawLargestRectangle(img, masks[i]);
-      if (draw_key == 1 && myPoint.x != 0 && myPoint.y != 0)
-        newPoints.push_back(drawingPoints{myPoint, i, prev_key});
-    }
 
-    drawPointsOnScreen(img, newPoints);
-    // drawLinesOnScreen(img, newPoints);
+    draw(img, imgHSV, newPoints, masks, draw_key, prev_key);
+
     cv::flip(img, img, 1);
     cv::imshow("Image", img);
     int temp_key = cv::waitKey(10);
@@ -69,5 +73,7 @@ void pen() {
     cout << draw_key << endl;
   }
 }
+
+Pen::Pen(const vector<pair<hsvRange, Scalar>> &highlighters) : highlighters{highlighters} {};
 
 }

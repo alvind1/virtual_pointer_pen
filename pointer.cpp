@@ -1,4 +1,4 @@
-#include "demos.h"
+#include "pointer.h"
 
 #include <opencv2/opencv.hpp>
 #include <string>
@@ -13,15 +13,9 @@
 using std::cout;
 using std::endl;
 using utility::IMAGE_PATH;
+using utility::hsvRange;
 
-namespace demos {
-
-void shapeDetection() {
-  Mat img = cv::imread(IMAGE_PATH + "Shapes.jpg");
-  contour_detection::detectShapesFromImg(img);
-  utility::showImgWait(img);
-}
-
+namespace pointer {
 pair<double, int> findClosestContourToPoint(const vector<vector<cv::Point>> &contours, const vector<int> &indices, cv::Point point) {
   double minDist = 10000;
   int minIndex = 0;
@@ -112,7 +106,7 @@ void highlightClosestContour() {
   utility::showImgWait(img);
 }
 
-void big() {
+void pointer() {
   cv::VideoCapture cap(0);
   Mat img, imgHSV, mask;
   if (cap.isOpened() == false) {
@@ -120,7 +114,7 @@ void big() {
     exit(1);
   }
 
-  pair<hsvVals, hsvVals> hsvColours = utility::GREEN_HL_HSV;
+  hsvRange hsvColours = utility::GREEN_HL_HSV;
 
   vector<vector<Point>> contours;
   Mat markers;
@@ -129,7 +123,7 @@ void big() {
     cap.read(img);
     cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
 
-    mask = colour_detection::findColour(imgHSV, hsvColours.first, hsvColours.second); 
+    mask = colour_detection::findColour(imgHSV, hsvColours.min, hsvColours.max); 
     vector<Point> contour = contour_detection::findLargestRectangle(mask);
     cv::RotatedRect rr1;
     if(contour.size() != 0) rr1 = cv::minAreaRect(contour);

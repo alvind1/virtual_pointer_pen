@@ -8,11 +8,9 @@ using cv::Point;
 using std::string;
 using std::vector;
 
-namespace demos {
-
-void shapeDetection();
+namespace pointer {
 void highlightClosestContour();
-void big();
+void pointer();
 void highlightClosestContourToLine(Mat &img, cv::Point2f, cv::Point2f, bool showLine = true);
 void testHighlightClosestContourToLine(); 
 }  // namespace demos

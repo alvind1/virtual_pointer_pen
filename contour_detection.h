@@ -1,5 +1,5 @@
-#ifndef CONTOUR_DETECTION
-#define CONTOUR_DETECTION
+#ifndef __CONTOUR_DETECTION
+#define __CONTOUR_DETECTION
 #include <opencv2/opencv.hpp>
 #include <vector>
 
@@ -21,5 +21,6 @@ cv::RotatedRect drawLargestRotatedRectangle(Mat, const Mat &);
 void detectContoursFromImg(Mat &, int);
 void detectContoursFromVideo();
 void detectShapesFromImg(Mat &);
+void shapeDetection();
 }  // namespace contour_detection
 #endif

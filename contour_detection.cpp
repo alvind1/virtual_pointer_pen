@@ -13,6 +13,7 @@ using std::string;
 using std::vector;
 using std::cout;
 using std::endl;
+using utility::IMAGE_PATH;
 
 namespace contour_detection {
 void getContouredImg(const Mat &img, Mat &imgDil, bool showImage = false) {
@@ -184,5 +185,11 @@ void detectContoursFromVideo() {
     utility::show_img(img);
     cv::waitKey(1);
   }
+}
+
+void shapeDetection() {
+  Mat img = cv::imread(IMAGE_PATH + "Shapes.jpg");
+  contour_detection::detectShapesFromImg(img);
+  utility::showImgWait(img);
 }
 }  // namespace contour_detection

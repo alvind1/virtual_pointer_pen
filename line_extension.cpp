@@ -12,6 +12,7 @@ using std::make_pair;
 using std::pair;
 using std::vector;
 using utility::hsvVals;
+using utility::hsvRange;
 
 namespace line_extension {
 
@@ -65,12 +66,12 @@ void extendLine() {
     exit(1);
   }
 
-  pair<hsvVals, hsvVals> hsvColours = utility::GREEN_HL_HSV;
+  hsvRange hsvColours = utility::GREEN_HL_HSV;
 
   while (true) {
     cap.read(img);
     cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
-    mask = colour_detection::findColour(imgHSV, hsvColours.first, hsvColours.second); 
+    mask = colour_detection::findColour(imgHSV, hsvColours.min, hsvColours.max); 
     cv::RotatedRect rr = contour_detection::drawLargestRotatedRectangle(img, mask); 
     drawLineFromRotatedRect(img, rr);
     cv::flip(img, img, 1);
