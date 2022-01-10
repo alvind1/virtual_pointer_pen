@@ -18,12 +18,12 @@ using utility::hsvColours;
 using utility::hsvRange;
 
 void usePen() {
-  vector<pair<hsvRange, Scalar>> colours;
-  for(auto colour : hsvColours) {
-    colours.push_back(make_pair(colour, cv::Scalar{255, 0, 0}));
+  vector<pair<hsvRange, Scalar>> highlighters;
+  for(size_t i=0; i<hsvColours.size(); ++i) {
+    highlighters.push_back(make_pair(hsvColours[i], utility::COLOUR_LIST[i]));
   }
-  pen::Pen pen(colours);
-  pen.go(pen::LINE);
+  pen::Pen pen(highlighters);
+  pen.go(pen::LINE, pen::CUSTOM);
 }
 
 void usePointer() {

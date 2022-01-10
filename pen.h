@@ -8,24 +8,40 @@ using std::vector;
 using std::pair;
 using cv::Scalar;
 using cv::Mat;
+using cv::Point;
 using utility::hsvRange;
 
 namespace pen {
-enum STYLE {
+enum OUTPUT_STYLE {
   POINT, LINE
+};
+
+enum COLOUR_STYLE {
+  CUSTOM, RANDOM
 };
 
 class Pen {
 private:
   vector<pair<hsvRange, Scalar>> highlighters;
-  enum STYLE style;
-  struct drawingPoints;
-  void drawPointsOnScreen(Mat, vector<drawingPoints>);
-  void drawLinesOnScreen(Mat, vector<drawingPoints>);
-  void draw(Mat &, Mat &, vector<drawingPoints> &, vector<Mat> &, bool, bool);
+  enum OUTPUT_STYLE outputStyle = POINT;
+  enum COLOUR_STYLE colourStyle = CUSTOM;
+  struct drawingPoints {
+    Point p;
+    Scalar colour;
+    bool connectToPrev;
+  };
+  struct objectInfo{
+    Scalar colour;
+    vector<drawingPoints> points;
+  };
+  vector<objectInfo> trackedObjects;
+  Scalar chooseColour(Scalar); 
+  void drawPointsOnScreen(Mat &);
+  void drawLinesOnScreen(Mat &);
+  void draw(Mat &, Mat &, vector<Mat> &, bool, bool);
 public:
   Pen(const vector<pair<hsvRange, Scalar>> &);
-  void go(enum STYLE = POINT);
+  void go(enum OUTPUT_STYLE = POINT, enum COLOUR_STYLE = CUSTOM);
 };
 }
 

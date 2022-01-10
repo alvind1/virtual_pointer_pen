@@ -13,44 +13,50 @@ using cv::Point;
 using cv::Scalar;
 
 namespace pen {
-struct Pen::drawingPoints {
-  Point p;
-  Scalar colour;
-  bool connectToPrev;
-};
 
-void Pen::drawPointsOnScreen(Mat img, vector<drawingPoints> newPoints) {
-  for (int i = 0; i < newPoints.size(); ++i) {
-    cv::circle(img, newPoints[i].p, 5, newPoints[i].colour, cv::FILLED);
-  }
+Scalar Pen::chooseColour(Scalar colour) {
+  if(colourStyle == CUSTOM) return colour;
+  else return {static_cast<double>(rand()%255), static_cast<double>(rand()%255), static_cast<double>(rand()%255)};
 }
 
-void Pen::drawLinesOnScreen(Mat img, vector<drawingPoints> newPoints) {
-  for (int i = 1; i < newPoints.size(); ++i) {
-    if (newPoints[i - 1].colour == newPoints[i].colour && newPoints[i].connectToPrev) {
-      line(img, newPoints[i - 1].p, newPoints[i].p, newPoints[i].colour, 10);
+void Pen::drawPointsOnScreen(Mat &img) {
+  for(const auto &obj : trackedObjects) {
+    for(const auto &point : obj.points) {
+      cv::circle(img, point.p, 5, point.colour, cv::FILLED);
     }
   }
 }
 
-void Pen::draw(Mat &img, Mat &imgHSV, vector<drawingPoints> &newPoints, vector<Mat> &masks, bool draw_key, bool prev_key) {
+void Pen::drawLinesOnScreen(Mat &img) {
+  for(const auto &obj : trackedObjects) {
+    for (int i = 1; i < obj.points.size(); ++i) {
+      if (obj.points[i].connectToPrev) {
+        line(img, obj.points[i - 1].p, obj.points[i].p, obj.points[i].colour, 10);
+      }
+    }
+  }
+}
+
+void Pen::draw(Mat &img, Mat &imgHSV, vector<Mat> &masks, bool draw_key, bool prev_key) {
   cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
   for (int i = 0; i < highlighters.size(); i++) {
     masks[i] = (colour_detection::findColour(imgHSV, highlighters[i].first.min, highlighters[i].first.max));
     Point myPoint = contour_detection::drawLargestRectangle(img, masks[i]);
     if (draw_key == 1 && myPoint.x != 0 && myPoint.y != 0)
-      newPoints.push_back(drawingPoints{myPoint, highlighters[i].second, prev_key});
+      trackedObjects[i].points.push_back(drawingPoints{myPoint, chooseColour(highlighters[i].second), prev_key});
   }
 
-  if(style == STYLE::POINT) {
-    drawPointsOnScreen(img, newPoints);
-  } else if(style == STYLE::LINE) {
-    drawLinesOnScreen(img, newPoints);
+  if(outputStyle == OUTPUT_STYLE::POINT) {
+    drawPointsOnScreen(img);
+  } else if(outputStyle == OUTPUT_STYLE::LINE) {
+    drawLinesOnScreen(img);
   }
 }
 
-void Pen::go(enum STYLE style) {
-  this->style = style;
+void Pen::go(enum OUTPUT_STYLE outputStyle, enum COLOUR_STYLE colourStyle) {
+  this->outputStyle = outputStyle;
+  this->colourStyle = colourStyle;
+
   cv::VideoCapture cap(0);
   Mat img, imgHSV;
   if (cap.isOpened() == false) {
@@ -58,13 +64,12 @@ void Pen::go(enum STYLE style) {
     exit(1);
   }
 
-  vector<drawingPoints> newPoints;
   vector<Mat> masks(highlighters.size());
   bool draw_key = 0, prev_key = 0;
   while (true) {
     cap.read(img);
 
-    draw(img, imgHSV, newPoints, masks, draw_key, prev_key);
+    draw(img, imgHSV, masks, draw_key, prev_key);
 
     cv::flip(img, img, 1);
     cv::imshow("Image", img);
@@ -72,12 +77,20 @@ void Pen::go(enum STYLE style) {
     prev_key = draw_key;
     if (temp_key == 'm')
       draw_key ^= 1;
-    else if (temp_key == 'c')
-      newPoints.clear();
+    else if (temp_key == 'c') {
+      for(auto &obj : trackedObjects) {
+        obj.points.clear();
+      }
+    }
     cout << draw_key << endl;
   }
 }
 
-Pen::Pen(const vector<pair<hsvRange, Scalar>> &highlighters) : highlighters{highlighters} {};
+Pen::Pen(const vector<pair<hsvRange, Scalar>> &highlighters) : 
+  highlighters{highlighters} {
+    for(const auto &highlight : highlighters) {
+      trackedObjects.push_back({highlight.second});
+    }
+  };
 
 }

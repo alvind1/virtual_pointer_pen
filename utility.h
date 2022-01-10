@@ -30,7 +30,7 @@ const hsvRange GREEN_HL_HSV(hsvVals{71, 52, 0}, hsvVals{124, 255, 243});  // Gre
 const hsvRange YELLOW_HL_HSV( hsvVals{23, 74, 177}, hsvVals{56, 127, 255});  // Yellow Highlighter
 const hsvRange RED_PEN_HSV(hsvVals{0, 137, 184}, hsvVals{22, 173, 212});  // Red Pen
 const hsvRange BLUE_PEN_HSV(hsvVals{36, 43, 56}, hsvVals{132, 158, 188});  // Blue Pen
-const vector<hsvRange> hsvColours{RED_PEN_HSV, BLUE_PEN_HSV};
+const vector<hsvRange> hsvColours{GREEN_HL_HSV, YELLOW_HL_HSV};
 
 const vector<cv::Vec3b> COLOUR_LIST{{255, 0, 0},   {0, 0, 255},
                                     {0, 255, 0},   {255, 255, 0},
