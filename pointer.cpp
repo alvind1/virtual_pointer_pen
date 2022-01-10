@@ -16,7 +16,7 @@ using utility::IMAGE_PATH;
 using utility::hsvRange;
 
 namespace pointer {
-pair<double, int> findClosestContourToPoint(const vector<vector<cv::Point>> &contours, const vector<int> &indices, cv::Point point) {
+pair<double, int> Pointer::findClosestContourToPoint(const vector<vector<cv::Point>> &contours, const vector<int> &indices, cv::Point point) {
   double minDist = 10000;
   int minIndex = 0;
   for(auto it : indices) {
@@ -29,7 +29,7 @@ pair<double, int> findClosestContourToPoint(const vector<vector<cv::Point>> &con
   return make_pair(minDist, minIndex);
 }
 
-void testHighlightClosestContourToLine() {
+void Pointer::testHighlightClosestContourToLine() {
   Mat img = cv::imread(utility::IMAGE_PATH+"mydesk.jpg");
   float pointy = static_cast<float> (rand()%img.rows);
   float pointx = static_cast<float>(rand()%img.cols);
@@ -41,7 +41,7 @@ void testHighlightClosestContourToLine() {
   utility::showImgWait(img);
 }
 
-void highlightClosestContourToLine(Mat &img, cv::Point2f p1, cv::Point2f p2, bool showLine) {
+void Pointer::highlightClosestContourToLine(Mat &img, cv::Point2f p1, cv::Point2f p2, bool showLine) {
   vector<vector<cv::Point>> contours;
   Mat markers;
   segmentation::segmentImg(img, contours, markers);
@@ -78,7 +78,7 @@ void highlightClosestContourToLine(Mat &img, cv::Point2f p1, cv::Point2f p2, boo
   contour_detection::outlineContours(img, mask);
 }
 
-void highlightClosestContour() {
+void Pointer::highlightClosestContour() {
   Mat img = cv::imread(IMAGE_PATH + "mydesk.jpg");
   vector<vector<cv::Point>> contours;
   Mat markers;
@@ -106,7 +106,7 @@ void highlightClosestContour() {
   utility::showImgWait(img);
 }
 
-void pointer() {
+void Pointer::point() {
   cv::VideoCapture cap(0);
   Mat img, imgHSV, mask;
   if (cap.isOpened() == false) {

@@ -11,16 +11,21 @@ using cv::Mat;
 using utility::hsvRange;
 
 namespace pen {
+enum STYLE {
+  POINT, LINE
+};
+
 class Pen {
 private:
   vector<pair<hsvRange, Scalar>> highlighters;
+  enum STYLE style;
   struct drawingPoints;
   void drawPointsOnScreen(Mat, vector<drawingPoints>);
-  void drawLinesOnScreen(Mat, vector<drawingPoints>, vector<Scalar> colours = {{255, 0, 0}, {0, 255, 0}});
+  void drawLinesOnScreen(Mat, vector<drawingPoints>);
   void draw(Mat &, Mat &, vector<drawingPoints> &, vector<Mat> &, bool, bool);
 public:
   Pen(const vector<pair<hsvRange, Scalar>> &);
-  void go();
+  void go(enum STYLE = POINT);
 };
 }
 

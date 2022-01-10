@@ -14,20 +14,24 @@
 #include "tests.h"
 
 using std::make_pair;
-using utility::hsv_colours;
+using utility::hsvColours;
 using utility::hsvRange;
 
 void usePen() {
   vector<pair<hsvRange, Scalar>> colours;
-  for(auto colour : hsv_colours) {
+  for(auto colour : hsvColours) {
     colours.push_back(make_pair(colour, cv::Scalar{255, 0, 0}));
   }
   pen::Pen pen(colours);
-  pen.go();
+  pen.go(pen::LINE);
+}
+
+void usePointer() {
+  pointer::Pointer pointer;
+  pointer.point();
 }
 
 int main(int argc, char** argv) {
-  //usePen();
-  tests::test();
+  usePen();
   return 0;
 }

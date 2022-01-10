@@ -25,7 +25,7 @@ void Pen::drawPointsOnScreen(Mat img, vector<drawingPoints> newPoints) {
   }
 }
 
-void Pen::drawLinesOnScreen(Mat img, vector<drawingPoints> newPoints, vector<Scalar> colours) {
+void Pen::drawLinesOnScreen(Mat img, vector<drawingPoints> newPoints) {
   for (int i = 1; i < newPoints.size(); ++i) {
     if (newPoints[i - 1].colour == newPoints[i].colour && newPoints[i].connectToPrev) {
       line(img, newPoints[i - 1].p, newPoints[i].p, newPoints[i].colour, 10);
@@ -42,11 +42,15 @@ void Pen::draw(Mat &img, Mat &imgHSV, vector<drawingPoints> &newPoints, vector<M
       newPoints.push_back(drawingPoints{myPoint, highlighters[i].second, prev_key});
   }
 
-  drawPointsOnScreen(img, newPoints);
-  // drawLinesOnScreen(img, newPoints);
+  if(style == STYLE::POINT) {
+    drawPointsOnScreen(img, newPoints);
+  } else if(style == STYLE::LINE) {
+    drawLinesOnScreen(img, newPoints);
+  }
 }
 
-void Pen::go() {
+void Pen::go(enum STYLE style) {
+  this->style = style;
   cv::VideoCapture cap(0);
   Mat img, imgHSV;
   if (cap.isOpened() == false) {
