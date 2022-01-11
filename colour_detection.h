@@ -11,12 +11,19 @@ using cv::Mat;
 
 namespace colour_detection {
 Mat convertImageHSV(const Mat &);
-Mat findColour(const Mat &img, const hsvVals min, const hsvVals max);
 void imageColourDetection(string);
-void imageColourPicker(const Mat &);
-void videoColourPicker();
 
 class ColourDetector {
+private:
+  Mat imgHSV;
+  Mat mask;
+public:
+  Mat convertImageHSV(const Mat &);
+  Mat findColour(const Mat &, const hsvVals, const hsvVals); 
+  void imageColourPicker(const Mat &);
+  void videoColourPicker();
+  void imageColourDetection(string path); 
+  const Mat &getImgHSV();
 };
 }  // namespace colour_detection
 #endif

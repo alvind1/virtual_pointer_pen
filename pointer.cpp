@@ -106,7 +106,7 @@ void Pointer::point(Mat &img) {
   Mat imgHSV, mask;
   cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
 
-  mask = colour_detection::findColour(imgHSV, hsvColours.min, hsvColours.max); 
+  mask = colourDetector.findColour(imgHSV, hsvColours.min, hsvColours.max); 
   vector<Point> contour = contour_detection::findLargestRectangle(mask);
   cv::RotatedRect rr1;
   if(contour.size() != 0) rr1 = cv::minAreaRect(contour);

@@ -36,6 +36,6 @@ void useSegmenter() {
 }
 
 int main(int argc, char** argv) {
-  usePen();
+  usePointer();
   return 0;
 }

@@ -37,10 +37,10 @@ void Pen::drawLinesOnScreen(Mat &img) {
   }
 }
 
-void Pen::draw(Mat &img, Mat &imgHSV, vector<Mat> &masks, bool draw_key, bool prev_key) {
+void Pen::draw(Mat &img, bool draw_key, bool prev_key) {
   cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
   for (int i = 0; i < highlighters.size(); i++) {
-    masks[i] = (colour_detection::findColour(imgHSV, highlighters[i].first.min, highlighters[i].first.max));
+    masks[i] = (colourDetector.findColour(imgHSV, highlighters[i].first.min, highlighters[i].first.max));
     Point myPoint = contour_detection::drawLargestRectangle(img, masks[i]);
     if (draw_key == 1 && myPoint.x != 0 && myPoint.y != 0)
       trackedObjects[i].points.push_back(drawingPoints{myPoint, chooseColour(highlighters[i].second), prev_key});
@@ -64,9 +64,7 @@ void Pen::handle(Mat &img, int key) {
   }
   cout << drawKey << endl;
 
-  Mat imgHSV;
-  vector<Mat> masks(highlighters.size());
-  draw(img, imgHSV, masks, drawKey, prevKey);
+  draw(img, drawKey, prevKey);
 }
 
 void Pen::go(enum OUTPUT_STYLE outputStyle, enum COLOUR_STYLE colourStyle) {
@@ -77,7 +75,7 @@ void Pen::go(enum OUTPUT_STYLE outputStyle, enum COLOUR_STYLE colourStyle) {
 }
 
 Pen::Pen(const vector<pair<hsvRange, Scalar>> &highlighters) : 
-  highlighters{highlighters} {
+  highlighters{highlighters}, masks(highlighters.size()) {
   for(const auto &highlight : highlighters) {
     trackedObjects.push_back({highlight.second});
   }

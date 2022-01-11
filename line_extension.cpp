@@ -67,11 +67,12 @@ void extendLine() {
   }
 
   hsvRange hsvColours = utility::GREEN_HL_HSV;
+  colour_detection::ColourDetector colourDetector;
 
   while (true) {
     cap.read(img);
     cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
-    mask = colour_detection::findColour(imgHSV, hsvColours.min, hsvColours.max); 
+    mask = colourDetector.findColour(imgHSV, hsvColours.min, hsvColours.max); 
     cv::RotatedRect rr = contour_detection::drawLargestRotatedRectangle(img, mask); 
     drawLineFromRotatedRect(img, rr);
     cv::flip(img, img, 1);

@@ -5,6 +5,7 @@
 
 #include "segmentation.h"
 #include "video_manager.h"
+#include "colour_detection.h"
 #include "utility.h"
 
 using cv::Mat;
@@ -16,6 +17,7 @@ using std::pair;
 namespace pointer {
 class Pointer {
 private:
+  colour_detection::ColourDetector colourDetector;
   video_manager::VideoManager<Pointer> videoManager{this};
   utility::hsvRange hsvColours;
   segmentation::Segmenter segmenter;

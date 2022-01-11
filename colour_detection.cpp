@@ -18,21 +18,23 @@ using utility::MIN_HSV;
 
 namespace colour_detection {
 
-Mat convertImageHSV(const Mat &img) {
-  Mat imgHSV;
+Mat ColourDetector::convertImageHSV(const Mat &img) {
   cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
   return imgHSV;
 }
 
-Mat findColour(const Mat &img, const hsvVals min, const hsvVals max) {
+const Mat &ColourDetector::getImgHSV() {
+  return imgHSV;
+}
+
+Mat ColourDetector::findColour(const Mat &img, const hsvVals min, const hsvVals max) {
   Scalar lower(min.hue, min.sat, min.val);
   Scalar upper(max.hue, max.sat, max.val);
-  Mat mask;
   inRange(img, lower, upper, mask);
   return mask;
 }
 
-void imageColourPicker(const Mat &img) {
+void ColourDetector::imageColourPicker(const Mat &img) {
   Mat imgHSV = convertImageHSV(img), mask;
   imshow("Image", img);
   imshow("Image HSV", imgHSV);
@@ -51,7 +53,7 @@ void imageColourPicker(const Mat &img) {
   }
 }
 
-void videoColourPicker() {
+void ColourDetector::videoColourPicker() {
   cv::VideoCapture cap(0);
   Mat img, imgHSV, mask;
   if (cap.isOpened() == false) {
@@ -69,17 +71,17 @@ void videoColourPicker() {
     cout << hsv_max.hue << ' ' << hsv_max.sat << ' ' << hsv_max.val << endl;
     cout << endl;
     cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
-    mask = colour_detection::findColour(imgHSV, hsv_min, hsv_max);
+    mask = findColour(imgHSV, hsv_min, hsv_max);
     cv::imshow("Image", img);
     cv::imshow("Image Colours", mask);
     cv::waitKey(1);
   }
 }
 
-void imageColourDetection(string path) {
+void ColourDetector::imageColourDetection(string path) {
   Mat img = cv::imread(path);
-  Mat imgHSV = colour_detection::convertImageHSV(img);
-  Mat mask = colour_detection::findColour(imgHSV, {129, 54, 0}, {179, 255, 255});  // Tesla colours
+  Mat imgHSV = convertImageHSV(img);
+  Mat mask = findColour(imgHSV, {129, 54, 0}, {179, 255, 255});  // Tesla colours
   cv::imshow("Image", img);
   cv::imshow("Image HSV", imgHSV);
   cv::imshow("Image Colours", mask);
