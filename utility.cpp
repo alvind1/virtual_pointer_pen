@@ -9,8 +9,8 @@ using std::cout;
 using std::endl;
 
 namespace utility {
-void show_img(const Mat &img, string title) {
-  cv::imshow(title.c_str(), img);
+void showImg(const Mat &img, string title, bool show) {
+  if(show) cv::imshow(title.c_str(), img);
 }
 
 void showImgWait(const Mat &img, string title) {

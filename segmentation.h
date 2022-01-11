@@ -5,14 +5,25 @@
 
 using std::string;
 using std::vector;
+using cv::Mat;
+using cv::Point;
 
 namespace segmentation { 
+void showSegmentedImg(const string &);
+
+class Segmenter {
+private:
+  bool debug = false;
+  vector<vector<Point>> contours;
+  Mat markers;
+  Mat preprocessImg(const Mat &img);
+public:
+  Mat segmentImg(const Mat &img);
+  void removeBadContours(const vector<vector<cv::Point>> &, vector<int> &, int, int);
   void segmentVideo();
-  void showSegmentedImg(const string &);
-  cv::Mat segmentImg(cv::Mat &, vector<vector<cv::Point>> &, cv::Mat &);
-  void testSegmentImg();
-  void segment2();
-  void removeBadContours(const vector<vector<cv::Point>> &, vector<int> &, int, int, const cv::Mat &);
+  const Mat &getMarkers();
+  const vector<vector<Point>> &getContours();
+};
 }
 
 #endif

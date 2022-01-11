@@ -4,3 +4,4 @@ build/
 configurations.h
 CMakeLists.txt
 .DS_Store
+archive.h

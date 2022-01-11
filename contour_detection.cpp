@@ -182,7 +182,7 @@ void detectContoursFromVideo() {
     cap.read(img);
     contour_detection::detectContoursFromImg(img, 500);
     cv::flip(img, img, 1);
-    utility::show_img(img);
+    utility::showImg(img);
     cv::waitKey(1);
   }
 }

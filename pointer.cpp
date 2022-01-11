@@ -31,7 +31,7 @@ pair<double, int> Pointer::findClosestContourToPoint(const vector<vector<cv::Poi
 
 void Pointer::testHighlightClosestContourToLine() {
   Mat img = cv::imread(utility::IMAGE_PATH+"mydesk.jpg");
-  float pointy = static_cast<float> (rand()%img.rows);
+  float pointy = static_cast<float>(rand()%img.rows);
   float pointx = static_cast<float>(rand()%img.cols);
   cout << pointx << " " << pointy << endl;
 
@@ -42,18 +42,16 @@ void Pointer::testHighlightClosestContourToLine() {
 }
 
 void Pointer::highlightClosestContourToLine(Mat &img, cv::Point2f p1, cv::Point2f p2, bool showLine) {
-  vector<vector<cv::Point>> contours;
-  Mat markers;
-  segmentation::segmentImg(img, contours, markers);
-  vector<int> indices(contours.size(), 0);
-  for(int i=1; i<=contours.size(); ++i) indices[i-1] = i;
+  segmenter.segmentImg(img);
+  vector<int> indices(segmenter.getContours().size(), 0);
+  for(int i=1; i<=indices.size(); ++i) indices[i-1] = i;
 
   vector<vector<cv::Point>> contours2;
   for(auto index : indices) {
-    Mat temp = (markers==index);
+    Mat temp = (segmenter.getMarkers()==index);
     contours2.push_back(contour_detection::getContours(temp)[0]);
   }
-  segmentation::removeBadContours(contours2, indices, img.rows, img.cols, img);
+  segmenter.removeBadContours(contours2, indices, img.rows, img.cols);
 
   if(showLine) cv::line(img, p1, p2, {0, 0, 255}, 10);
 
@@ -74,24 +72,22 @@ void Pointer::highlightClosestContourToLine(Mat &img, cv::Point2f p1, cv::Point2
   cout << "line points " << p1 << " " << p2 << endl;
   cout << "MIN " << minDist << " " << minIndex << endl;
 
-  Mat mask = (markers == minIndex);
+  Mat mask = (segmenter.getMarkers() == minIndex);
   contour_detection::outlineContours(img, mask);
 }
 
 void Pointer::highlightClosestContour() {
   Mat img = cv::imread(IMAGE_PATH + "mydesk.jpg");
-  vector<vector<cv::Point>> contours;
-  Mat markers;
-  segmentation::segmentImg(img, contours, markers);
-  vector<int> indices(contours.size(), 0);
-  for(int i=1; i<=contours.size(); ++i) indices[i-1] = i;
+  segmenter.segmentImg(img);
+  vector<int> indices(segmenter.getContours().size(), 0);
+  for(int i=1; i<=indices.size(); ++i) indices[i-1] = i;
 
   vector<vector<cv::Point>> contours2;
   for(auto index : indices) {
-    Mat temp = (markers==index);
+    Mat temp = (segmenter.getMarkers()==index);
     contours2.push_back(contour_detection::getContours(temp)[0]);
   }
-  segmentation::removeBadContours(contours2, indices, img.rows, img.cols, img);
+  segmenter.removeBadContours(contours2, indices, img.rows, img.cols);
 
   float pointy = static_cast<float> (rand()%img.rows);
   float pointx = static_cast<float>(rand()%img.cols);
@@ -101,7 +97,7 @@ void Pointer::highlightClosestContour() {
 
   pair<double, int> minMask = findClosestContourToPoint(contours2, indices, circ);
 
-  Mat mask = (markers == minMask.second);
+  Mat mask = (segmenter.getMarkers()== minMask.second);
   contour_detection::outlineContours(img, mask);
   utility::showImgWait(img);
 }
@@ -116,9 +112,6 @@ void Pointer::point() {
 
   hsvRange hsvColours = utility::GREEN_HL_HSV;
 
-  vector<vector<Point>> contours;
-  Mat markers;
-
   while (true) {
     cap.read(img);
     cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
@@ -132,6 +125,7 @@ void Pointer::point() {
     if(!isnan(ln.first.x) && !isnan(ln.first.y) && !isnan(ln.second.x) && !isnan(ln.second.y)) {
       highlightClosestContourToLine(img, ln.first, ln.second, false);
     }
+
     cv::flip(img, img, 1);
     cv::imshow("Image", img);
     cv::waitKey(1);

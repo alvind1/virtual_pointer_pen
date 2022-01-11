@@ -39,12 +39,14 @@ const vector<cv::Vec3b> COLOUR_LIST{{255, 0, 0},   {0, 0, 255},
 using configs::IMAGE_PATH;
 using configs::OPENCV4_PATH;
 
-void show_img(const cv::Mat &, string title = "Image");
+void showImg(const cv::Mat &, string title = "Image", bool = true);
 void showImgWait(const cv::Mat &, string title = "Image");
 void createHSVTrackbars(hsvVals &, hsvVals &);
 
 bool inBetween(cv::Point, cv::Point, cv::Point);
 bool inColourRange(cv::Vec3b, cv::Vec3b, cv::Vec3b);
+
+enum DEBUG_LEVEL {DEBUG_ZERO = 0, DEBUG_ONE, DEBUG_TWO, DEBUG_THREE};
 }  // namespace utility
 
 #endif

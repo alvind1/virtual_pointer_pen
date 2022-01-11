@@ -88,9 +88,9 @@ void Pen::go(enum OUTPUT_STYLE outputStyle, enum COLOUR_STYLE colourStyle) {
 
 Pen::Pen(const vector<pair<hsvRange, Scalar>> &highlighters) : 
   highlighters{highlighters} {
-    for(const auto &highlight : highlighters) {
-      trackedObjects.push_back({highlight.second});
-    }
-  };
+  for(const auto &highlight : highlighters) {
+    trackedObjects.push_back({highlight.second});
+  }
+};
 
 }

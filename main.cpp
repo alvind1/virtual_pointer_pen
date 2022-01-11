@@ -31,7 +31,11 @@ void usePointer() {
   pointer.point();
 }
 
+void useSegmenter() {
+  tests::testSegmentVideo();
+}
+
 int main(int argc, char** argv) {
-  usePen();
+  useSegmenter();
   return 0;
 }
