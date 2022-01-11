@@ -2,6 +2,7 @@
 #define __PEN_H
 
 #include "utility.h"
+#include "video_manager.h"
 #include <opencv2/opencv.hpp>
 
 using std::vector;
@@ -22,7 +23,9 @@ enum COLOUR_STYLE {
 
 class Pen {
 private:
+  video_manager::VideoManager<Pen> videoManager{this};
   vector<pair<hsvRange, Scalar>> highlighters;
+  bool drawKey = 0, prevKey = 0;
   enum OUTPUT_STYLE outputStyle = POINT;
   enum COLOUR_STYLE colourStyle = CUSTOM;
   struct drawingPoints {
@@ -42,6 +45,7 @@ private:
 public:
   Pen(const vector<pair<hsvRange, Scalar>> &);
   void go(enum OUTPUT_STYLE = POINT, enum COLOUR_STYLE = CUSTOM);
+  void handle(Mat &img, int key);
 };
 }
 

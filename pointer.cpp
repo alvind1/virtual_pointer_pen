@@ -102,34 +102,29 @@ void Pointer::highlightClosestContour() {
   utility::showImgWait(img);
 }
 
-void Pointer::point() {
-  cv::VideoCapture cap(0);
-  Mat img, imgHSV, mask;
-  if (cap.isOpened() == false) {
-    cout << "cannot open webcam\n";
-    exit(1);
-  }
+void Pointer::point(Mat &img) {
+  Mat imgHSV, mask;
+  cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
 
-  hsvRange hsvColours = utility::GREEN_HL_HSV;
+  mask = colour_detection::findColour(imgHSV, hsvColours.min, hsvColours.max); 
+  vector<Point> contour = contour_detection::findLargestRectangle(mask);
+  cv::RotatedRect rr1;
+  if(contour.size() != 0) rr1 = cv::minAreaRect(contour);
+  pair<cv::Point2f, cv::Point2f> ln = line_extension::getLineFromRotatedRect(rr1);
 
-  while (true) {
-    cap.read(img);
-    cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
-
-    mask = colour_detection::findColour(imgHSV, hsvColours.min, hsvColours.max); 
-    vector<Point> contour = contour_detection::findLargestRectangle(mask);
-    cv::RotatedRect rr1;
-    if(contour.size() != 0) rr1 = cv::minAreaRect(contour);
-    pair<cv::Point2f, cv::Point2f> ln = line_extension::getLineFromRotatedRect(rr1);
-
-    if(!isnan(ln.first.x) && !isnan(ln.first.y) && !isnan(ln.second.x) && !isnan(ln.second.y)) {
-      highlightClosestContourToLine(img, ln.first, ln.second, false);
-    }
-
-    cv::flip(img, img, 1);
-    cv::imshow("Image", img);
-    cv::waitKey(1);
+  if(!isnan(ln.first.x) && !isnan(ln.first.y) && !isnan(ln.second.x) && !isnan(ln.second.y)) {
+    highlightClosestContourToLine(img, ln.first, ln.second, false);
   }
 }
+
+void Pointer::handle(Mat &img, int key) {
+  point(img);
+}
+
+void Pointer::go() {
+  videoManager.go();
+}
+
+Pointer::Pointer(hsvRange hsvColours) : hsvColours{hsvColours} {}
 
 }  // namespace demos

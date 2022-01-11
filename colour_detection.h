@@ -15,5 +15,8 @@ Mat findColour(const Mat &img, const hsvVals min, const hsvVals max);
 void imageColourDetection(string);
 void imageColourPicker(const Mat &);
 void videoColourPicker();
+
+class ColourDetector {
+};
 }  // namespace colour_detection
 #endif

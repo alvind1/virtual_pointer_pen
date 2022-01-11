@@ -27,8 +27,8 @@ void usePen() {
 }
 
 void usePointer() {
-  pointer::Pointer pointer;
-  pointer.point();
+  pointer::Pointer pointer(utility::GREEN_HL_HSV);
+  pointer.go();
 }
 
 void useSegmenter() {
@@ -36,6 +36,6 @@ void useSegmenter() {
 }
 
 int main(int argc, char** argv) {
-  useSegmenter();
+  usePen();
   return 0;
 }
