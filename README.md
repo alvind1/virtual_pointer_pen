@@ -2,7 +2,7 @@
 
 Started off with this [tutorial](https://www.youtube.com/watch?v=2FYm3GOonhk)
 
-![virtual pen](https://media.giphy.com/media/QIrkGURFdd3WmGkN3H/giphy-downsized-large.gif)
+![virtual pen](https://media.giphy.com/media/QIrkGURFdd3WmGkN3H/giphy.gif)
 
 Then made Virtual Pointer (points to things)
 
