@@ -28,6 +28,7 @@ private:
     Point p;
     Scalar colour;
     bool connectToPrev;
+    OUTPUT_STYLE outputStyle;
   };
   struct objectInfo{
     Scalar colour;
@@ -45,6 +46,7 @@ private:
   Scalar chooseColour(Scalar); 
   void drawPointsOnScreen(Mat &);
   void drawLinesOnScreen(Mat &);
+  void drawOnScreen(Mat &);
   void draw(Mat &, bool, bool);
 public:
   Pen(const vector<pair<hsvRange, Scalar>> &);

@@ -140,14 +140,14 @@ cv::Point drawLargestRectangle(Mat img, const Mat &imgDil) {
   vector<Point> conPoly;
   float peri = cv::arcLength(contour, true);
   cv::approxPolyDP(contour, conPoly, 0.02 * peri, true);
-  cv::drawContours(img, vector<vector<Point>>{conPoly}, 0, cv::Scalar(255, 0, 255), 10);
+  //cv::drawContours(img, vector<vector<Point>>{conPoly}, 0, cv::Scalar(255, 0, 255), 10);
 
   Point mypoint(0, 0);
   cv::Rect boundedRect;
   boundedRect = cv::boundingRect(conPoly);
   mypoint.x = boundedRect.x + boundedRect.width / 2;
   mypoint.y = boundedRect.y;
-  cv::rectangle(img, boundedRect.tl(), boundedRect.br(), cv::Scalar(0, 255, 0), 5);
+  //cv::rectangle(img, boundedRect.tl(), boundedRect.br(), cv::Scalar(0, 255, 0), 5);
 
   return mypoint;
 }

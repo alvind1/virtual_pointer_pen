@@ -23,7 +23,7 @@ void usePen() {
     highlighters.push_back(make_pair(hsvColours[i], utility::COLOUR_LIST[i]));
   }
   pen::Pen pen(highlighters);
-  pen.go(pen::LINE, pen::CUSTOM);
+  pen.go(pen::POINT, pen::CUSTOM);
 }
 
 void usePointer() {
