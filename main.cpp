@@ -35,7 +35,12 @@ void useSegmenter() {
   tests::testSegmentVideo();
 }
 
+void chooseColour() {
+  colour_detection::ColourDetector colourDetector;
+  colourDetector.videoColourPicker();
+}
+
 int main(int argc, char** argv) {
-  usePointer();
+  usePen();
   return 0;
 }

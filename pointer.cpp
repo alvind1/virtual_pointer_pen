@@ -16,6 +16,9 @@ using utility::IMAGE_PATH;
 using utility::hsvRange;
 
 namespace pointer {
+
+const utility::DEBUG_LEVEL DEBUG = utility::DEBUG_ONE;
+
 pair<double, int> Pointer::findClosestContourToPoint(const vector<vector<cv::Point>> &contours, const vector<int> &indices, cv::Point point) {
   double minDist = 10000;
   int minIndex = 0;
@@ -114,6 +117,10 @@ void Pointer::point(Mat &img) {
 
   if(!isnan(ln.first.x) && !isnan(ln.first.y) && !isnan(ln.second.x) && !isnan(ln.second.y)) {
     highlightClosestContourToLine(img, ln.first, ln.second, false);
+  }
+
+  if(DEBUG == utility::DEBUG_TWO) {
+    cv::line(img, ln.first, ln.second, {0, 0, 255}, 10);
   }
 }
 

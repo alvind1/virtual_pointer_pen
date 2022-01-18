@@ -62,7 +62,7 @@ void extendLine() {
   cv::VideoCapture cap(0);
   Mat img, imgHSV, mask;
   if (cap.isOpened() == false) {
-    std::cout << "cannot open webcam\n";
+    cout << "cannot open webcam\n";
     exit(1);
   }
 
